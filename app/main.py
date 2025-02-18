@@ -1,13 +1,7 @@
-from pathlib import Path
-
 from fastapi import FastAPI
 
-from app.settings import settings
 from app.api import router
-
-UPLOAD_DIR = "uploads"
-
-Path(UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
+from app.settings import settings
 
 app = FastAPI()
 

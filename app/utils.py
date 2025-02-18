@@ -1,10 +1,14 @@
 import os
 import shutil
+from pathlib import Path
 from uuid import uuid4
 
 from fastapi import UploadFile
 
-from app.main import UPLOAD_DIR
+
+UPLOAD_DIR = "uploads"
+
+Path(UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
 
 
 def save_file(file: UploadFile):

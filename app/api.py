@@ -3,8 +3,7 @@ import os
 from fastapi import File, UploadFile, HTTPException, APIRouter
 from fastapi.responses import FileResponse
 
-from app.main import UPLOAD_DIR
-from app.utils import save_file
+from app.utils import save_file, UPLOAD_DIR
 
 router = APIRouter()
 
