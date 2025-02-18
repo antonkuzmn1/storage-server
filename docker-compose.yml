@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  fastapi:
+    image: antonkuzmn1/storage-server
+    env_file:
+      - .env
+    container_name: storage-server
+    build: .
+    ports:
+      - "3005:8000"
+    volumes:
+      - ./uploads:/uploads
+    restart: always
