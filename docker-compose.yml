@@ -10,5 +10,5 @@ services:
     ports:
       - "3005:8000"
     volumes:
-      - ./uploads:/uploads
+      - ./uploads:/app/uploads
     restart: always
