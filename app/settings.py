@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     DB_PASS: str = ""
     DB_NAME: str = ""
 
+    OAUTH_CHECK_URL: str
+    UPLOAD_DIR: str
+
     DEBUG: bool = False
 
     @property

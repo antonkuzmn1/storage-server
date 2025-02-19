@@ -1,10 +1,10 @@
-from sqlalchemy import Column, Integer, String, DateTime, func, Boolean, BigInteger
+from sqlalchemy import Column, Integer, String, DateTime, func, BigInteger
 from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
 
-class Admin(Base):
+class File(Base):
     __tablename__ = 'files'
 
     uuid = Column(String(36), primary_key=True, index=True)

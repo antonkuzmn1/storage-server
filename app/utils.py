@@ -2,11 +2,12 @@ import os
 import shutil
 from pathlib import Path
 from uuid import uuid4
-
 from fastapi import UploadFile
 
+from settings import settings
 
-UPLOAD_DIR = "uploads"
+
+UPLOAD_DIR = settings.UPLOAD_DIR
 
 Path(UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
 
