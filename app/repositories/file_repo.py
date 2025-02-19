@@ -1,42 +1,51 @@
-from typing import List
-
-from sqlalchemy.orm import Session
+from typing import List, Optional
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
 from app.models import File
 from app.logger import logger
 
 
 class FileRepository:
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
-    def create_file(self, file_data: dict) -> File:
+    async def create_file(self, file_data: dict) -> Optional[File]:
         try:
             db_file = File(**file_data)
             self.db.add(db_file)
-            self.db.commit()
-            self.db.refresh(db_file)
+            await self.db.commit()
+            await self.db.refresh(db_file)
             return db_file
         except SQLAlchemyError as e:
-            logger.error(f"Error creating item: {e}")
-            self.db.rollback()
+            logger.error(f"Error creating file: {e}")
+            await self.db.rollback()
             return None
 
-    def get_file(self, file_uuid: str) -> File:
-        return self.db.query(File).filter(File.uuid == file_uuid).first()
+    async def get_file(self, file_uuid: str) -> Optional[File]:
+        result = await self.db.execute(select(File).where(File.uuid == file_uuid))
+        return result.scalars().first()
 
-    def get_all_files(self) -> List[File]:
-        return self.db.query(File).all()
+    async def get_all_files(self) -> List[File]:
+        result = await self.db.execute(select(File))
+        return result.scalars().all()
 
-    def delete_file(self, file_uuid: str) -> None:
-        db_file = self.get_file(file_uuid)
-        if db_file:
-            self.db.delete(db_file)
+    async def get_all_users_files(self, user_id: str) -> List[File]:
+        result = await self.db.execute(select(File).where(File.user_id == user_id))
+        return result.scalars().all()
 
+    async def delete_file(self, file_uuid: str) -> Optional[File]:
         try:
-            self.db.commit()
-            return db_file
+            result = await self.db.execute(select(File).where(File.uuid == file_uuid))
+            db_file = result.scalars().first()
+
+            if db_file:
+                await self.db.delete(db_file)
+                await self.db.commit()
+                return db_file
+
+            return None
         except SQLAlchemyError as e:
-            logger.error(f"Error creating item: {e}")
-            self.db.rollback()
+            logger.error(f"Error deleting file: {e}")
+            await self.db.rollback()
             return None
