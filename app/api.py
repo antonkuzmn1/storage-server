@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status
+from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status, Form
 from fastapi.responses import FileResponse
 
 from app.dependencies.auth import verify_token, require_roles
@@ -14,9 +14,19 @@ async def upload_file(
         file: UploadFile = File(...),
         service: FileService = Depends(get_file_service),
         user_data: dict = Depends(verify_token),
+        user_id: int = Form(None)
 ):
     try:
-        return await service.save_upload_file(file, user_data["id"])
+        if user_data.get("role") in ["admin", "owner"]:
+            if not user_id:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="user_id must be provided for admin or owner"
+                )
+        else:
+            user_id = user_data["id"]
+
+        return await service.save_upload_file(file, user_id)
     except HTTPException:
         raise
     except Exception as e:
