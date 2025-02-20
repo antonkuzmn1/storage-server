@@ -73,7 +73,11 @@ class FileService:
             return False
 
     async def get_user_files(self, user_id: str) -> List[FileOut]:
-        db_files = await self.repository.get_all_users_files(user_id)
+        db_files = await self.repository.get_all_user_files(user_id)
+        return [FileOut.model_validate(f) for f in db_files]
+
+    async def get_all_files(self) -> List[FileOut]:
+        db_files = await self.repository.get_all_files()
         return [FileOut.model_validate(f) for f in db_files]
 
     async def verify_file_access(self, file_uuid: str, user_id: str, roles: List[str]) -> FileOut:

@@ -30,7 +30,7 @@ class FileRepository:
         result = await self.db.execute(select(File))
         return result.scalars().all()
 
-    async def get_all_users_files(self, user_id: str) -> List[File]:
+    async def get_all_user_files(self, user_id: str) -> List[File]:
         result = await self.db.execute(select(File).where(File.user_id == user_id))
         return result.scalars().all()
 
